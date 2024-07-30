@@ -36,6 +36,8 @@ func ProxyHandle(w http.ResponseWriter, r *http.Request) {
 		req.Header.Set("Cookie", cookie)
 	}
 
+	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
+
 	resp, err := client.Do(req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
