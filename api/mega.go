@@ -1,4 +1,5 @@
 package handler
+
 import (
 	"io"
 	"net/http"
@@ -28,7 +29,18 @@ func ProxyHandle(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("Sec-CH-UA", `"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"`)
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 	req.Header.Set("X-Requested-With", "XMLHttpRequest")
-	req.Header.Set("Cookie", "_gid=GA1.2.1401738551.1722270563; _gat_gtag_UA_118288579_1=1; _ga_EL3PNTGQT1=GS1.1.1722291026.2.1.1722292048.0.0.0; _ga=GA1.2.1333958481.1722270563")
+
+	// Copy headers if not already set
+
+	for k, vv := range r.Header {
+		if k == "Accept" || k == "Referer" || k == "Sec-CH-UA" || k == "User-Agent" || k == "X-Requested-With" {
+			continue
+		}
+
+		for _, v := range vv {
+			req.Header.Add(k, v)
+		}
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -49,5 +61,3 @@ func ProxyHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
-
-
