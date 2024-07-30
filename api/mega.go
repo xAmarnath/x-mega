@@ -30,16 +30,10 @@ func ProxyHandle(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 	req.Header.Set("X-Requested-With", "XMLHttpRequest")
 
-	// Copy headers if not already set
-
-	for k, vv := range r.Header {
-		if k == "Accept" || k == "Referer" || k == "Sec-CH-UA" || k == "User-Agent" || k == "X-Requested-With" {
-			continue
-		}
-
-		for _, v := range vv {
-			req.Header.Add(k, v)
-		}
+	// Copy cookies if present
+	cookie := r.Header.Get("Cookie")
+	if cookie != "" {
+		req.Header.Set("Cookie", cookie)
 	}
 
 	resp, err := client.Do(req)
