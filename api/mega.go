@@ -1,5 +1,4 @@
-package main
-
+package handler
 import (
 	"io"
 	"log"
